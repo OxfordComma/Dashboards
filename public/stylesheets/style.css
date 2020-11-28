@@ -1,0 +1,45 @@
+body {
+	background: #333;
+	margin: 0;
+	color: white;
+	font-family: 'Playfair Display', serif;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+text {
+	fill: white;
+}
+
+table {
+  border-collapse: separate;
+  border-spacing: 20px 0px;
+  text-align: left;
+  width: 100%;
+}
+
+th {
+	font-style: bold;
+	font-size: 1.1em;
+}
+
+
+tbody>tr:hover {
+	background: grey;
+	cursor: pointer;
+}
+
+ul {
+  list-style-type: none;
+}
+
+
+.chart-item, .legend-item {
+	cursor: pointer;
+}
+
+span {
+	display: inline-block;
+}

@@ -1,0 +1,38 @@
+.container {
+	display: grid;
+	grid-template-rows: 10% 90%;
+	grid-template-columns: 15% auto 10%;
+	width: 100vw;
+	height: 100vh; 
+}
+
+.header {
+	grid-row-start: 1;
+	grid-row-end: 2;
+	grid-column-start: 2;
+	grid-column-end: 3;
+}
+
+.sidebar {
+	grid-row-start: 1;
+	grid-row-end: 3;
+	grid-column-start: 1;
+	grid-column-end: 2;
+
+	overflow-y: scroll;
+	text-align: left;
+}
+
+.chart {
+	grid-row-start: 2;
+	grid-row-end: 3;
+	grid-column-start: 2;
+	grid-column-end: 3;
+}
+
+.legend {
+	grid-row-start: 1;
+	grid-row-end: 2;
+	grid-column-start: 3;
+	grid-column-end: 4;
+}
