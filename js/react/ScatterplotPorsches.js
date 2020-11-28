@@ -112,9 +112,9 @@ class ScatterplotPorsches extends React.Component {
 	}
 
 	async componentDidMount() {
-		var dataUrl = "http://localhost:3000/data/cars/porsche/normalized"
+		var dataUrl = "/data/cars/porsche/normalized"
 		var data = await d3.json(dataUrl)
-		var modelUrl = 'http://localhost:3000/data/cars/porsche/model'
+		var modelUrl = '/data/cars/porsche/model'
 		var model = await d3.json(modelUrl)
 
 		// console.log(model)
