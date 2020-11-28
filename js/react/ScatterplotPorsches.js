@@ -33,7 +33,7 @@ class ScatterplotPorsches extends React.Component {
 				label: 'year',
 				accessor: d=>d['year']
 			},
-			'post_time': {
+			'Post time': {
 				label: 'post time',
 				accessor: d => new Date( d['post_time']), 
 				format: d => d3.timeFormat("%B %d, %Y")(d)
@@ -66,20 +66,26 @@ class ScatterplotPorsches extends React.Component {
 
 		this.tableOptions = {
 			'_id': { accessor: d => d._id },
+			'post_time': { 
+				accessor: d => d.post_time, 
+				width: 600,
+				Cell: d => d3.timeFormat("%d %b %Y %H:%M")(new Date(d.row.original.post_time)),
+			},
 			'year': { accessor: d => d.year },
 			'make': { accessor: d => d.make },
 			'model': { accessor: d => d.model },
 			'info': { 
 				accessor: d => d.info,
-				Cell: d => <a href={d.row.original.url} target='_blank' rel='noreferrer'>{d.value}</a>
+				Cell: d => <a href={d.row.original.url} target='_blank' rel='noreferrer'>{d.value}</a>,
+				width: 100
 			 },
 			'_mileage': { accessor: d => d._mileage },
 			'_transmission': { accessor: d => d._transmission },
 			'_drive': { accessor: d => d._drive },
 			'color': { accessor: d => d._color },
 			'_price': { accessor: d => d._price },
-			'^_price': { accessor: d => d['^_price'] },
-			'price_diff': { accessor: d => parseInt((d._price/d['^_price'])*100) }
+			// '^_price': { accessor: d => d['^_price'] },
+			// 'price_diff': { accessor: d => parseInt((d._price/d['^_price'])*100) }
 
 		}
 		
@@ -87,17 +93,17 @@ class ScatterplotPorsches extends React.Component {
 			data: [],
 			rawData: [],
 			datum: null,
-			xValue: 'year',
+			xValue: '_mileage',
 			yValue: '_price',
-			legendBy: '_submodel',
+			legendBy: 'year',
 			colorScale: d3.scaleOrdinal(d3.schemeCategory10),
 			sidebar: {
 				_model: 'all',
 				_submodel: 'Carrera S',
 				_generation: '997',
-				transmission: 'all',
-				_cabriolet: 'all',
-				_drive: 'all',
+				transmission: 'Manual',
+				_cabriolet: 0,
+				_drive: 'rwd',
 			}
 		};
 ``

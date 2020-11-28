@@ -7,7 +7,7 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var dataRouter = require('./routes/data')
-var carsRouter = require('./routes/cars');
+// var carsRouter = require('./routes/cars');
 var dashRouter = require('./routes/dash');
 
 
@@ -26,7 +26,7 @@ app.set('json spaces', 2)
 
 app.use('/', indexRouter);
 app.use('/data', dataRouter);
-app.use('/cars', carsRouter);
+// app.use('/cars', carsRouter);
 app.use('/dash', dashRouter)
 
 // catch 404 and forward to error handler
