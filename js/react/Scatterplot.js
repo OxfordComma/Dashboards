@@ -79,7 +79,7 @@ class Scatterplot extends React.Component {
 			.attr('fill', (d) => 
 				this.props.legendBy == 'color' ? 
 				d['color'] : 
-				this.props.colorScale(d[this.props.legendBy]) 
+				this.props.scale(d[this.props.legendBy]) 
 				)
 			.attr('cx', (d) => 
 				isNaN(this.xScale(this.props.xValue.accessor(d))) ? 0 : this.xScale(this.props.xValue.accessor(d)) )

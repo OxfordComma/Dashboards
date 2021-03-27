@@ -1,5 +1,5 @@
 import React from 'react'
-import { useTable, useSortBy, useFilters, useRowSelect } from 'react-table'
+import { useTable, useSortBy, useFilters, useRowSelect, useBlockLayout } from 'react-table'
 function ReactTable(props) {
 		var columns = Object.keys(props.options).map(c => {
 			return {
@@ -44,6 +44,7 @@ function Table({ columns, data, getRowProps }) {
 	useFilters,
 	useSortBy,
 	useRowSelect,
+	useBlockLayout,
 	// hooks => {
 		// hooks.flatColumns.push(columns => [
 		// 	// Let's make a column for selection
@@ -79,7 +80,7 @@ function Table({ columns, data, getRowProps }) {
 					<tr {...headerGroup.getHeaderGroupProps()}>
 						{headerGroup.headers.map(column => (
 							<th {...column.getHeaderProps(column.getSortByToggleProps())}>
-								{column.render('Header') + (column.isSorted ? (column.isSortedDesc ? '▼' : '▲') : ' ')}
+								{column.render('Header') + (column.isSorted ? (column.isSortedDesc ? '↑' : '↓') : '⠀')}
 								{/*column.canFilter ? column.render('Filter') : null*/}
 		
 							</th>

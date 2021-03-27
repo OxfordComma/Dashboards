@@ -18,15 +18,36 @@ class ScatterplotPorsches extends React.Component {
 		this.graphRef = React.createRef()
 		this.tableRef = React.createRef()
 		
-		this.legendOptions = [
-			'_generation', 
-			'_cabriolet', 
-			'_transmission', 
-			'_submodel', 
-			'_color', 
-			'_drive',
-			'year'
-		]
+		this.legendOptions = {
+			'_generation': {
+				name: '_generation',
+				accessor: d => d['_generation'], 
+				scale: d3.scaleOrdinal(d3.schemeCategory10)
+		  },
+		  '_color': {
+				name: '_color',
+				accessor: d => d['_color'], 
+				scale: d3.scaleOrdinal()
+			  	
+			  },
+			// '_cabriolet', 
+			// '_transmission', 
+			// '_submodel', 
+			// '_color', 
+			// '_drive',
+			'year': {
+				name: 'year',
+				accessor: d => d['year'],
+				scale: d3.scaleOrdinal(d3.schemeCategory10)
+			},
+			'_mileage': {
+				name: '_mileage',
+				accessor: d => d['_mileage'], 
+				scale: d3.scaleLinear()
+			  	.domain([ 0, 75000, 150000 ])
+			  	.range(["rgb(10, 10, 10)", "rgb(66, 93, 143)", 'rgb(245, 245, 245)'])
+			  },
+		}
 	
 		this.xOptions = {
 			'year': {
@@ -46,18 +67,18 @@ class ScatterplotPorsches extends React.Component {
 		console.log(this.xOptions[0])
 
 		this.yOptions = {
-			'^_price': {
-				label: 'predicted price',
-				accessor: d => d['^_price']
-			},
+			// '^_price': {
+			// 	label: 'predicted price',
+			// 	accessor: d => d['^_price']
+			// },
 			_price: { 
 				label: 'price',
 				accessor: d => d._price, 
 			},
-			price_diff: {
-				label: 'actual over predicted',
-				accessor: d => (d._price/d['^_price'])
-			},
+			// price_diff: {
+			// 	label: 'actual over predicted',
+			// 	accessor: d => (d._price/d['^_price'])
+			// },
 			_mileage: {
 				label: 'mileage',
 				accessor: d => d._mileage
@@ -65,25 +86,25 @@ class ScatterplotPorsches extends React.Component {
 		}
 
 		this.tableOptions = {
-			'_id': { accessor: d => d._id },
-			'post_time': { 
+			// '_id': { accessor: d => d._id },
+			'post time': { 
 				accessor: d => d.post_time, 
-				width: 600,
-				Cell: d => d3.timeFormat("%d %b %Y %H:%M")(new Date(d.row.original.post_time)),
+				width: 210,
+				Cell: d => d3.timeFormat("%d %B %Y %H:%M")(new Date(d.row.original.post_time)),
 			},
-			'year': { accessor: d => d.year },
-			'make': { accessor: d => d.make },
-			'model': { accessor: d => d.model },
+			'year': { accessor: d => d.year, width: 50 },
+			'make': { accessor: d => d.make, width: 75 },
+			'model': { accessor: d => d.model, width: 75 },
 			'info': { 
-				accessor: d => d.info,
+				accessor: d => d._info,
 				Cell: d => <a href={d.row.original.url} target='_blank' rel='noreferrer'>{d.value}</a>,
-				width: 100
+				width: 500
 			 },
-			'_mileage': { accessor: d => d._mileage },
-			'_transmission': { accessor: d => d._transmission },
-			'_drive': { accessor: d => d._drive },
-			'color': { accessor: d => d._color },
-			'_price': { accessor: d => d._price },
+			'mileage': { accessor: d => d._mileage, width: 100 },
+			'transmission': { accessor: d => d._transmission, width: 125 },
+			'drive': { accessor: d => d._drive, width: 75 },
+			'color': { accessor: d => d._color, width: 100 },
+			'price': { accessor: d => d._price, width: 75 },
 			// '^_price': { accessor: d => d['^_price'] },
 			// 'price_diff': { accessor: d => parseInt((d._price/d['^_price'])*100) }
 
@@ -95,8 +116,10 @@ class ScatterplotPorsches extends React.Component {
 			datum: null,
 			xValue: '_mileage',
 			yValue: '_price',
-			legendBy: 'year',
-			colorScale: d3.scaleOrdinal(d3.schemeCategory10),
+			legendBy: '_mileage',
+			// scale: d3.scaleLinear()
+			//   .domain([ 0, 150000 ])
+			//   .range(["rgb(10, 10, 10)", "rgb(66, 93, 143)"]),
 			sidebar: {
 				_model: 'all',
 				_submodel: 'Carrera S',
@@ -104,6 +127,7 @@ class ScatterplotPorsches extends React.Component {
 				transmission: 'Manual',
 				_cabriolet: 0,
 				_drive: 'rwd',
+				year: '2009',
 			}
 		};
 ``
@@ -116,6 +140,14 @@ class ScatterplotPorsches extends React.Component {
 		this.onYAxisDropdownChange = this.onYAxisDropdownChange.bind(this)
 		this.onSidebarDropdownChange = this.onSidebarDropdownChange.bind(this)
 	}
+
+	getUniqueItems (data, accessor) {
+			return [...new Set(data.map(accessor))].sort()
+	}
+
+	// getLegendItems (data) {
+	// 		return this.getUniqueItems(data, d => d[this.state.legendBy]).sort()
+	// }
 
 	async componentDidMount() {
 		var dataUrl = "/data/cars/porsche/normalized"
@@ -147,20 +179,25 @@ class ScatterplotPorsches extends React.Component {
 				data = data.filter(d => d[s].toString() == sidebar[s])
 		})
 
+		
+	  var colorsD = this.getUniqueItems(data, d=>d._color).sort()
+	  var colorsR = this.getUniqueItems(data, d=>d._color).sort()
+	  colorsR[colorsR.indexOf('unknown')] = 'none'
+		this.legendOptions._color.scale
+			.domain(colorsD)
+	  	.range(colorsR)
+
+	  this.legendOptions.year.scale.domain(this.getUniqueItems(data, d=>d.year).sort() )
+	  
 		this.setState({ 
 			data: data,
 			rawData: rawData,
 			machineLearningModel: model[0]
+
 		})
 	}
 
-	getUniqueItems (data, accessor) {
-			return [...new Set(data.map(accessor))].sort()
-	}
-
-	getLegendItems (data) {
-			return this.getUniqueItems(data, d => d[this.state.legendBy]).sort()
-	}
+	
 
 
 	onClickLegend(item) {
@@ -225,6 +262,10 @@ class ScatterplotPorsches extends React.Component {
 		var legendItem = event.target.value
 		var legendBy = legendItem
 
+		// var legendOption = this.legendOptions[legendBy]
+	 //  legendOption.scale
+	 //  	.domain(this.getUniqueItems(this.state.data, d=>legendOption.accessor(d)).sort())
+
 		event.preventDefault();
 
 		this.setState({ 
@@ -280,6 +321,7 @@ class ScatterplotPorsches extends React.Component {
 	}
 
 	render() {
+		console.log(this.state)
 		return (
 			<div id='porsche-scatter' className='container'>
 				<div className='header'>
@@ -301,7 +343,7 @@ class ScatterplotPorsches extends React.Component {
 						title='Legend:'
 						onChange={this.onLegendDropdownChange}
 						onSubmit={this.onLegendDropdownSubmit}
-						options={this.legendOptions}
+						options={Object.keys(this.legendOptions)}
 						default={this.state.legendBy}
 					/>
 				</div>
@@ -320,7 +362,7 @@ class ScatterplotPorsches extends React.Component {
 						yValue={this.yOptions[this.state.yValue]}
 						data={this.state.data}
 						legendBy={this.state.legendBy}
-						colorScale={this.state.colorScale}
+						scale={this.legendOptions[this.state.legendBy].scale}
 						onClickChartItem={this.onClickChartItem}
 						onClickBackground={this.onClickBackground}
 					/>
@@ -328,13 +370,13 @@ class ScatterplotPorsches extends React.Component {
 				<div className='legend'>
 					<Legend
 						// chartWidth={this.graphRef.current?.offsetWidth}
-						direction={'vertical'}
-						align={'left'}
-						legendItems={this.getLegendItems(this.state.data)}
-						selectedLegendItems={this.getLegendItems(this.state.data.filter(d => d.selected))}
-						onClickLegend={this.onClickLegend}
-						colorScale={this.state.colorScale}
-						legendBy={this.state.legendBy}
+						orientation={'vertical'}
+						// align={'left'}
+						// legendItems={this.getLegendItems(this.state.data)}
+						// selectedLegendItems={this.getLegendItems(this.state.data.filter(d => d.selected))}
+						// onClickLegend={this.onClickLegend}
+						legendBy={this.legendOptions[this.state.legendBy]}
+						// legendBy={this.state.legendBy}
 					/>
 			</div>
 				{/*<div className='info'>
