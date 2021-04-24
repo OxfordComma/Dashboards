@@ -1,8 +1,8 @@
 import React from 'react'
 import * as d3 from 'd3'
-import { legendColor } from 'd3-svg-legend'
+// import { legendColor } from 'd3-svg-legend'
 
-class Legend extends React.Component {
+class Header extends React.Component {
 	constructor(props) {
 		super(props);
 		this.legendRef = React.createRef()
@@ -26,54 +26,31 @@ class Legend extends React.Component {
 	}
 
 	updateLegend() {
-		let selection = d3.select(this.legendRef.current)
-		// console.log(this.props)
+		// let selection = d3.select(this.legendRef.current)
+		// // console.log(this.props)
 		// console.log(this.props.legendBy)
 
-		// var linear = d3.scaleLinear()
-		//   .domain([ 0, 150000 ])
-		//   .range(["rgb(10, 10, 10)", "rgb(46, 73, 123)"]);
+		// // var linear = d3.scaleLinear()
+		// //   .domain([ 0, 150000 ])
+		// //   .range(["rgb(10, 10, 10)", "rgb(46, 73, 123)"]);
 
-		// selection;
-		// var labelFunc = function({ 
-		// 	i,
-		//   genLength,
-		//   generatedLabels,
-		//   labelDelimiter
-		// 	}) {
-		//   	return d3.timeParse("%s")(parseInt(generatedLabels[i]))
-		//   }
+		// // selection;
 
-		var legendLinear = legendColor()
-			// .labelFormat(this.props.legendBy.format ?? d3.format(","))
-		  .labels(({ 
-				i,
-			  genLength,
-			  generatedLabels,
-			  labelDelimiter
-			}) => { 
-				console.log(this.props.legendValue.format ? 
-		  		this.props.legendValue.format(generatedLabels[i]) :
-		  		generatedLabels[i])
-		  	return (this.props.legendValue.format ? 
-		  		this.props.legendValue.format(generatedLabels[i]) :
-		  		generatedLabels[i] )})
-		  .shapeWidth(30)
-		  // .cells(this.props.legendValue.cells ?? 10)
-		  .orient(this.props.orientation)
-		  .scale(this.props.legendValue.scale)
+		// var legendLinear = legendColor()
+		// 	.labelFormat(d3.format(","))
+		//   .shapeWidth(30)
+		//   .orient(this.props.orientation)
+		//   .scale(this.props.legendBy.scale)
 		  
 
-		// console.log(this.props.legendBy.scale.domain())
-  	// console.log(this.props.legendBy.scale.range())
-		selection.selectAll(".legendLinear").remove()
+		// console.log(legendLinear)
+		// selection.selectAll(".legendLinear").remove()
 
-		var l = selection.selectAll(".legendLinear")
-			.data([this.props.legendValue.label])
-			.enter().append("g")
-		  .attr("class", "legendLinear")
-		  // .attr("transform", "translate(20,20)")
-		  .call(legendLinear)
+		// var l = selection.selectAll(".legendLinear").data([this.props.legendBy.name])
+		// 	.enter().append("g")
+		//   .attr("class", "legendLinear")
+		//   // .attr("transform", "translate(20,20)")
+		//   .call(legendLinear)
 		// l.exit().remove()
 
 		// var lEnter = l
@@ -151,31 +128,18 @@ class Legend extends React.Component {
 		// 	.attr('opacity', d => this.props.selectedLegendItems.includes(d) ? 1 : 0.1)
 	}
 	update() {
-		this.updateLegend();
+		// this.updateLegend();
 	}
 
 	render() {
 		return (
-			<svg width="100%vw" height="100%vh">
-				<g ref={this.legendRef} className='legend'
-					transform={`translate(${this.props.margin.left}, ${this.props.margin.top + this.props.radius})`} />
-			</svg>
+			<div className='header'>
+				<a href='/dash/porsche'>Porsche</a>
+			</div>
 		)
 	}
 }
 
-Legend.defaultProps = {
-	data: [],
-	width: 300,
-	height: 300,
-	radius: 5,
-	offset: 0,
-	margin: {
-		left: 5,
-		right: 10,
-		top: 10,
-		bottom: 10
-	}
-};
 
-export default Legend
+
+export default Header

@@ -2,11 +2,13 @@ import React from "react";
 // import Checkbox from './Checkbox.js'
 import DropdownForm from './DropdownForm'
 
-const GraphSidebar = ({ sidebar, data, onDropdownChange }) => (
+const GraphSidebar = ({ sidebar, data, onDropdownChange, style }) => (
 	<div id='sidebar-form'>
 		{
 			Object.keys(sidebar).map(opt => {
-				var unique = [...new Set(data.map(item => item[opt]))].sort()
+				var unique = [...new Set(data.map(item => item[opt]?.toString()).filter(d => d))].sort()
+				// console.log(opt)
+				// console.log(unique)
 				return (
 					<div className='checkbox' key={opt}>
 						<ul>
@@ -17,7 +19,7 @@ const GraphSidebar = ({ sidebar, data, onDropdownChange }) => (
 									default={sidebar[opt]}
 									id={opt}
 									options={['all'].concat(unique)}
-									style={{width: 150+'px'}}
+									style={style}
 									/>
 							</li>
 						</ul>

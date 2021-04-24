@@ -1,6 +1,7 @@
 body {
 	background: #333;
 	margin: 0;
+	padding: 0;
 	color: white;
 	font-family: 'Playfair Display', serif;
 }
@@ -33,8 +34,9 @@ tbody>tr:hover {
 
 ul {
   list-style-type: none;
+  padding: 0px;
+  margin: 0px;
 }
-
 
 .chart-item, .legend-item {
 	cursor: pointer;
@@ -43,3 +45,4 @@ ul {
 span {
 	display: inline-block;
 }
+
