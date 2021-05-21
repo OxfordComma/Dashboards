@@ -38,7 +38,7 @@ router.get('/cars/porsche/new/normalized', async function(req, res, next) {
 
 
 //old
-router.get('/cars/porsche/old/normalized', async function(req, res, next) {
+router.get('/cars/porsche/old', async function(req, res, next) {
 	var data = await mongoDownloader.getMongoData('rennlist', 'old_listings', {
 		_generation: '997',
 	})

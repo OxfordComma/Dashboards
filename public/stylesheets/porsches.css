@@ -59,7 +59,8 @@
 	grid-column-end: 4;
 	grid-row-start: 3;
 	grid-row-end: 4;
-	text-align: left;
+	/*text-align: left;*/
+	overflow-y: scroll;
 }
 
 a {
@@ -90,7 +91,7 @@ text {
 table {
   border-collapse: separate;
   border-spacing: 20px 0px;
-  text-align: left;
+  /*text-align: left;*/
   width: 100%;
 }
 

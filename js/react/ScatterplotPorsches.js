@@ -29,7 +29,7 @@ class ScatterplotPorsches extends React.Component {
 			legendBy: 'year',
 			sidebar: {
 				_model: 'all',
-				_submodel: 'Carrera',
+				_submodel: 'Carrera S',
 				_generation: '997',
 				_transmission: 'manual',
 				_cabriolet: 0,
@@ -56,12 +56,12 @@ class ScatterplotPorsches extends React.Component {
 	}
 
 	async componentDidMount() {
-		var dataUrl = "/data/cars/porsche/new/normalized"
+		var dataUrl = "/data/cars/porsche/all/normalized"
 		var data = await d3.json(dataUrl)
-		var modelUrl = '/data/cars/porsche/model'
-		var model = await d3.json(modelUrl)
+		// var modelUrl = '/data/cars/porsche/model'
+		// var model = await d3.json(modelUrl)
 
-		var outputs = model[0].LinearRegression.outputs
+		// var outputs = model[0].LinearRegression.outputs
 
 		data = data.map(d => {
 			d.selected = true;
@@ -85,7 +85,7 @@ class ScatterplotPorsches extends React.Component {
 		this.setState({ 
 			data: data,
 			rawData: rawData,
-			machineLearningModel: model[0],
+			// machineLearningModel: model[0],
 		})
 	}
 
@@ -198,7 +198,7 @@ class ScatterplotPorsches extends React.Component {
 			'post time': { 
 				accessor: d => d.post_time, 
 				width: 210,
-				Cell: d => d3.timeFormat("%d %b %Y %H:%M")(new Date(d.row.original.post_time)),
+				Cell: d => d3.timeFormat("%Y-%m-%d %H:%M")(new Date(d.row.original.post_time)),
 			},
 			'year': { accessor: d => d.year, width: 50 },
 			'make': { accessor: d => d.make, width: 75 },
@@ -208,12 +208,24 @@ class ScatterplotPorsches extends React.Component {
 				Cell: d => <a href={d.row.original.url} target='_blank' rel='noreferrer'>{d.value}</a>,
 				width: 500
 			 },
-			'mileage': { accessor: d => d._mileage, width: 100 },
+			
 			'transmission': { accessor: d => d._transmission, width: 125 },
 			'drive': { accessor: d => d._drive, width: 75 },
 			'color': { accessor: d => d._color, width: 100 },
-			'price': { accessor: d => d._price, width: 75 },
+			'mileage': { 
+				id: 'mileage',
+				accessor: d => d._mileage, 
+				width: 100,
+				Header: () => (<div style={{'textAlign': 'right'}} >mileage</div>),
+				Cell: d => <div style={{'textAlign': 'right'}} >{d3.format(",.2r")(d.value)}</div>,
 
+			},
+			'price': { 
+				id: 'price',
+				accessor: d => d._price, 
+				width: 75,
+				Cell: d => <div style={{'textAlign': 'right'}} >{d3.format("$,.2r")(d.value)}</div>,
+			},
 		}
 
 	  var colorsD = this.getUniqueItems(data, d=>d._color).sort()
@@ -395,7 +407,8 @@ class ScatterplotPorsches extends React.Component {
 					</div>
 					<GraphSidebar
 						sidebar={this.state.sidebar}
-						data={this.state.rawData}
+						rawData={this.state.rawData}
+						data={this.state.data}
 						onDropdownChange={this.onSidebarDropdownChange}
 						style={{width: 90+'px'}}
 					/>
@@ -437,13 +450,6 @@ class ScatterplotPorsches extends React.Component {
 						// format={this}
 					/>
 			</div>
-				{/*<div className='info'>
-					<DataPoint 
-						datum={this.state.datum} 
-						model={this.state.machineLearningModel}
-					/>
-					</div>
-				*/}
 					<div className='table' ref={this.tableRef}>
 						<ReactTable 
 							data={this.state.data.filter(d => d.selected)}
