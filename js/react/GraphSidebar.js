@@ -1,5 +1,4 @@
 import React from "react";
-// import Checkbox from './Checkbox.js'
 import DropdownForm from './DropdownForm'
 
 const GraphSidebar = ({ sidebar, rawData, data, onDropdownChange, style }) => (

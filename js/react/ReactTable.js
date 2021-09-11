@@ -88,6 +88,7 @@ function Table({ columns, data, getRowProps }) {
 					</tr>
 				))}
 			</thead>
+			<div className='row-container' style={{ height: '100vh' }}>
 			<tbody {...getTableBodyProps()}>
 				{rows.map(
 					(row, i) => {
@@ -102,6 +103,7 @@ function Table({ columns, data, getRowProps }) {
 						)}
 				)}
 			</tbody>
+			</div>
 		</table>
 	)
 }

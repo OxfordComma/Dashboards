@@ -1,11 +1,9 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import ErrorBoundary from './ErrorBoundary.js'
-// import ScatterplotWithLegend from './ScatterplotWithLegend.js'
 import Header from './Header'
 import Scatterplot from './Scatterplot'
 import Legend from './Legend'
-// import ReactTable from './Table.js'
 import ReactTable from './ReactTable.js'
 import GraphSidebar from './GraphSidebar'
 import DropdownForm from './DropdownForm'
@@ -13,7 +11,7 @@ import DataPoint from './DataPoint'
 import * as d3 from "d3";
 import * as _ from 'lodash'
 
-class ScatterplotPorsches extends React.Component {
+class ScatterplotFacebook extends React.Component {
 	constructor(props) {
 		super(props);
 		
@@ -24,17 +22,18 @@ class ScatterplotPorsches extends React.Component {
 			data: [],
 			rawData: [],
 			datum: null,
-			xValue: '_mileage',
+			xValue: '_year',
 			yValue: '_price',
-			legendBy: 'year',
+			legendBy: '_make',
 			sidebar: {
-				_model: 'all',
-				_submodel: 'Carrera S',
-				_generation: '997',
-				_transmission: 'manual',
-				_cabriolet: 0,
-				_drive: 'rwd',
-				year: 'all',
+				_make: 'all',
+				_model: 'Miata',
+				// _submodel: 'Carrera S',
+				// _generation: '997',
+				// _transmission: 'manual',
+				// _cabriolet: 0,
+				// _drive: 'rwd',
+				// year: 'all',
 			}
 		};
 
@@ -56,8 +55,9 @@ class ScatterplotPorsches extends React.Component {
 	}
 
 	async componentDidMount() {
-		var dataUrl = "/data/cars/porsche/all/normalized"
+		var dataUrl = "/data/cars/fbmarketplace/normalized"
 		var data = await d3.json(dataUrl)
+		console.log(data)
 		// var modelUrl = '/data/cars/porsche/model'
 		// var model = await d3.json(modelUrl)
 
@@ -96,25 +96,21 @@ class ScatterplotPorsches extends React.Component {
 	updateOptions(data) {
 		// console.log(data)
 		this.xOptions = {
-			'post_time': {
-				name: 'post_time',
-				accessor: d => new Date( d['post_time']), 
-				format: d => d3.timeFormat("%Y %b")(d),
-				scale: d3.scaleLinear(),
-					// .domain([
-					// 	d3.min(data, (d) => new Date(d['post_time'])),
-					// 	d3.max(data, (d) => new Date(d['post_time']))
-					// ]),
-			},
-			'year': {
-				name: 'year',
-				accessor: d => d['year'],
+			// 'post_time': {
+			// 	name: 'post_time',
+			// 	accessor: d => new Date( d['post_time']), 
+			// 	format: d => d3.timeFormat("%Y %b")(d),
+			// 	scale: d3.scaleLinear(),
+			// },
+			'_year': {
+				name: '_year',
+				accessor: d => d['_year'],
 				scale: d3.scaleLinear(),
 					// .domain([
 					// 	d3.min(data, (d) => d['year']),
 					// 	d3.max(data, (d) => d['year'])
 					// ]),
-				ticks: this.getUniqueItems(data, d=>d['year']).length
+				// ticks: this.getUniqueItems(data, d=>d['year']).length
 			},
 			_price: { 
 				label: 'price',
@@ -128,6 +124,15 @@ class ScatterplotPorsches extends React.Component {
 			_mileage: {
 				label: 'mileage',
 				accessor: d => d['_mileage'],
+				scale: d3.scaleLinear(),
+					// .domain([
+					// 	d3.min(data, (d) => d['_mileage']),
+					// 	d3.max(data, (d) => d['_mileage'])
+					// ]),
+			},
+			last_updated: {
+				label: 'last_updated',
+				accessor: d => d['last_updated'],
 				scale: d3.scaleLinear(),
 					// .domain([
 					// 	d3.min(data, (d) => d['_mileage']),
@@ -158,68 +163,74 @@ class ScatterplotPorsches extends React.Component {
 		}
 
 		this.legendOptions = {
-			'_generation': {
-				name: '_generation',
-				accessor: d => d['_generation'], 
-				// scale: d3.scaleOrdinal(),
+			// '_generation': {
+			// 	name: '_generation',
+			// 	accessor: d => d['_generation'], 
+			// 	// scale: d3.scaleOrdinal(),
+			// 	scale: d3.scaleOrdinal(d3.schemeCategory10)
+		 //  },
+		 //  '_color': {
+			// 	name: '_color',
+			// 	accessor: d => d['_color'], 
+			// 	scale: d3.scaleOrdinal(d3.schemeCategory10),
+		 //  },
+			// 'post_time': {
+			// 	name: 'post_time',
+			// 	accessor: d => new Date( d['post_time']), 
+			// 	format: d => d3.timeFormat("%Y %b")(d),
+			// 	scale: d3.scaleLinear(['white', 'navy'])
+			// 		.domain([
+			// 			d3.min(data, d => new Date(d['post_time'])),
+			// 			d3.max(data, d => new Date(d['post_time']))
+			// 		]),
+			// },
+			// 'year': {
+			// 	name: 'year',
+			// 	accessor: d => d['year'],
+			// 	scale: d3.scaleOrdinal(d3.schemeCategory10)
+			// 		.domain(this.getUniqueItems(data, d=>d['year']).sort())
+			// },
+			'_make': {
+				name: 'make',
+				accessor: d => d['_make'],
 				scale: d3.scaleOrdinal(d3.schemeCategory10)
-		  },
-		  '_color': {
-				name: '_color',
-				accessor: d => d['_color'], 
-				scale: d3.scaleOrdinal(d3.schemeCategory10),
-		  },
-			'post_time': {
-				name: 'post_time',
-				accessor: d => new Date( d['post_time']), 
-				format: d => d3.timeFormat("%Y %b")(d),
-				scale: d3.scaleLinear(['white', 'navy'])
-					.domain([
-						d3.min(data, d => new Date(d['post_time'])),
-						d3.max(data, d => new Date(d['post_time']))
-					]),
+					.domain(this.getUniqueItems(data, d=>d['_make']).sort())
 			},
-			'year': {
-				name: 'year',
-				accessor: d => d['year'],
+			'_model': {
+				name: 'model',
+				accessor: d => d['_model'],
 				scale: d3.scaleOrdinal(d3.schemeCategory10)
-					.domain(this.getUniqueItems(data, d=>d['year']).sort())
-			},
-			'_submodel': {
-				name: 'submodel',
-				accessor: d => d['_submodel'],
-				scale: d3.scaleOrdinal(d3.schemeCategory10)
-					.domain(this.getUniqueItems(data, d=>d['_submodel']).sort())
+					.domain(this.getUniqueItems(data, d=>d['_model']).sort())
 			}
 		}
 
 		this.tableOptions = {
-			// '_id': { accessor: d => d._id },
-			'post time': { 
-				accessor: d => d.post_time, 
-				width: 210,
-				Cell: d => d3.timeFormat("%Y-%m-%d %H:%M")(new Date(d.row.original.post_time)),
+			// // '_id': { accessor: d => d._id },
+			'last_updated': { 
+				accessor: d => d.date, 
+				width: 150,
+				Cell: d => d3.timeFormat("%Y-%m-%d %H:%M")(new Date(d.row.original.last_updated)),
 			},
-			'year': { accessor: d => d.year, width: 50 },
-			'make': { accessor: d => d.make, width: 75 },
-			'model': { accessor: d => d.model, width: 75 },
-			'info': { 
-				accessor: d => d._info,
+			'year': { accessor: d => d._year, width: 150 },
+			'make': { accessor: d => d._make, width: 150 },
+			'model': { accessor: d => d._model, width: 300 },
+			'title': { 
+				accessor: d => d.title,
 				Cell: d => <a href={d.row.original.url} target='_blank' rel='noreferrer'>{d.value}</a>,
-				width: 500
+				width: 600
 			 },
 			
-			'transmission': { accessor: d => d._transmission, width: 125 },
-			'drive': { accessor: d => d._drive, width: 75 },
-			'color': { accessor: d => d._color, width: 100 },
-			'mileage': { 
-				id: 'mileage',
-				accessor: d => d._mileage, 
-				width: 100,
-				// Header: () => <div style={{'textAlign': 'right'}} >mileage</div>,
-				Cell: d => <div style={{'textAlign': 'right'}} >{d3.format(",.2r")(d.value)}</div>,
+			// 'transmission': { accessor: d => d._transmission, width: 125 },
+			// 'drive': { accessor: d => d._drive, width: 75 },
+			// 'color': { accessor: d => d._color, width: 100 },
+			// 'mileage': { 
+			// 	id: 'mileage',
+			// 	accessor: d => d._mileage, 
+			// 	width: 100,
+			// 	Header: () => (<div style={{'textAlign': 'right'}} >mileage</div>),
+			// 	Cell: d => <div style={{'textAlign': 'right'}} >{d3.format(",.2r")(d.value)}</div>,
 
-			},
+			// },
 			'price': { 
 				id: 'price',
 				accessor: d => d._price, 
@@ -228,17 +239,17 @@ class ScatterplotPorsches extends React.Component {
 			},
 		}
 
-	  var colorsD = this.getUniqueItems(data, d=>d._color).sort()
-	  console.log(colorsD)
-	  var colorsR = this.getUniqueItems(data, d=>d._color).sort()
+	 //  var colorsD = this.getUniqueItems(data, d=>d._color).sort()
+	 //  console.log(colorsD)
+	 //  var colorsR = this.getUniqueItems(data, d=>d._color).sort()
 	  
-	  colorsR[colorsR.indexOf('unknown')] = 'none'
+	 //  colorsR[colorsR.indexOf('unknown')] = 'none'
 
-		this.legendOptions._color.scale = this.legendOptions._color.scale
-			.domain(colorsD)
-	  	.range(colorsR)
+		// this.legendOptions._color.scale = this.legendOptions._color.scale
+		// 	.domain(colorsD)
+	 //  	.range(colorsR)
 
-  	console.log(this.legendOptions[this.state.legendBy].scale.domain())
+  // 	console.log(this.legendOptions[this.state.legendBy].scale.domain())
 
 	}
 
@@ -468,7 +479,7 @@ class ScatterplotPorsches extends React.Component {
 // Render application
 ReactDOM.render(
 	<ErrorBoundary>
-		<ScatterplotPorsches />
+		<ScatterplotFacebook />
 	</ErrorBoundary>,
 	document.getElementById('root')
 );

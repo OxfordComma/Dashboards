@@ -54,7 +54,7 @@ class Scatterplot extends React.Component {
 		this.xScale = this.props.xValue.scale
 			.domain([this.xMin, this.xMax])
 			.range([this.props.margin.left, this.state.drawWidth])
-			.nice()
+			// .nice()
 		
 		this.yScale = this.props.yValue.scale
 			.domain([this.yMin, this.yMax])
@@ -200,9 +200,9 @@ class Scatterplot extends React.Component {
 		// var drawHeight = this.svgRef.current?.clientHeight - this.props.margin.top - this.props.margin.bottom;
 		// console.log(this.svgRef)
 		// console.log(drawHeight)
-
+// transform={`translate(${this.props.margin.left}, ${this.props.margin.top})`}
 		return (
-			<svg ref={this.svgRef} width='100%vw' height='100%vh' transform={`translate(${this.props.margin.left}, ${this.props.margin.top})`}>
+			<svg ref={this.svgRef} width='100%vw' height='100%vh' >
 				<g className='chart-group' >
 					{/*<text transform={`translate(${this.drawWidth/2},0)`}>{this.props.title}</text>*/}
 					
