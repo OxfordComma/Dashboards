@@ -28,12 +28,6 @@ class ScatterplotCraigslist extends React.Component {
 			sidebar: {
 				_make: 'all',
 				_model: 'Miata',
-				// _submodel: 'Carrera S',
-				// _generation: '997',
-				// _transmission: 'manual',
-				// _cabriolet: 0,
-				// _drive: 'rwd',
-				// year: 'all',
 			}
 		};
 
@@ -204,7 +198,11 @@ class ScatterplotCraigslist extends React.Component {
 		this.tableOptions = {
 			// // '_id': { accessor: d => d._id },
 			'post_date': { 
-				accessor: d => d['post_date'], 
+				accessor: d => d['post_date'],
+				sortType: (a, b) => {
+					console.log(new Date(a.values['post_date']) - new Date(b.values['post_date']) > 0 ? 1 : -1)
+					return (new Date(a.values['post_date']) - new Date(b.values['post_date']) > 0 ? 1 : -1)
+				},
 				width: 150,
 				Cell: d => d3.utcFormat("%Y-%m-%d")(
 						new Date(d.row.original['post_date']),
@@ -394,7 +392,11 @@ class ScatterplotCraigslist extends React.Component {
 
 		return (
 			<div id='porsche-scatter' className='container'>
-				<Header/>
+				<Header options={[ 
+					{name: 'Porsches', href: '/dash/porsche'}, 
+					{name: 'Craigslist', href: '/dash/craigslist'}, 
+					{name: 'FB Marketplace', href: '/dash/fbmarketplace'}, 
+				]}/>
 				<div className='sidebar'>
 					<div className='dropdown'>
 						<DropdownForm
@@ -429,6 +431,7 @@ class ScatterplotCraigslist extends React.Component {
 						// height={this.graphRef.current?.offsetHeight}
 						xValue={this.xOptions[this.state.xValue]}
 						yValue={this.yOptions[this.state.yValue]}
+						yMin={0}
 						xTicks={this.xOptions[this.state.xValue].ticks ? this.xOptions[this.state.xValue].ticks : undefined}
 						data={this.state.data.filter(d => {
 							if (d[this.state.xValue] == 'unknown' || d[this.state.xValue] == undefined)

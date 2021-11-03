@@ -75,5 +75,47 @@ module.exports = [
 		filename: 'ScatterplotPorsches.js'
 	},
 	mode: 'development'
+},{
+	watch: true,
+	entry: './js/react/ScatterplotCraigslist.js',
+	module: {
+		rules: [
+			{
+				test: /\.(js)$/,
+				exclude: /node_modules/,
+				use: ['babel-loader', 'eslint-loader']
+			}
+		]
+	},
+	resolve: {
+		extensions: ['*', '.js']
+	},
+	output: {
+		path: __dirname + '/public/js',
+		publicPath: '/',
+		filename: 'ScatterplotCraigslist.js'
+	},
+	mode: 'development'
+},{
+	watch: true,
+	entry: './js/react/ScatterplotFacebook.js',
+	module: {
+		rules: [
+			{
+				test: /\.(js)$/,
+				exclude: /node_modules/,
+				use: ['babel-loader', 'eslint-loader']
+			}
+		]
+	},
+	resolve: {
+		extensions: ['*', '.js']
+	},
+	output: {
+		path: __dirname + '/public/js',
+		publicPath: '/',
+		filename: 'ScatterplotFacebook.js'
+	},
+	mode: 'development'
 }
 ]

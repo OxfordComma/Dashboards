@@ -196,7 +196,7 @@ class ScatterplotPorsches extends React.Component {
 		this.tableOptions = {
 			// '_id': { accessor: d => d._id },
 			'post time': { 
-				accessor: d => d.post_time, 
+				accessor: d => new Date(d.post_time), 
 				width: 210,
 				Cell: d => d3.timeFormat("%Y-%m-%d %H:%M")(new Date(d.row.original.post_time)),
 			},
@@ -216,7 +216,6 @@ class ScatterplotPorsches extends React.Component {
 				id: 'mileage',
 				accessor: d => d._mileage, 
 				width: 100,
-				// Header: () => <div style={{'textAlign': 'right'}} >mileage</div>,
 				Cell: d => <div style={{'textAlign': 'right'}} >{d3.format(",.2r")(d.value)}</div>,
 
 			},
