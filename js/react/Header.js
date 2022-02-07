@@ -18,9 +18,10 @@ class Header extends React.Component {
 	}
 
 	render() {
+		console.log(this.props)
 		return (
 			<div className='header'>
-				{this.props.options.map(opt => {
+				{this.props.options?.map(opt => {
 					return <a href={opt.href}>{opt.name}</a>
 				})}
 			</div>

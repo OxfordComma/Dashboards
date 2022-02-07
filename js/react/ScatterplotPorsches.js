@@ -383,7 +383,11 @@ class ScatterplotPorsches extends React.Component {
 
 		return (
 			<div id='porsche-scatter' className='container'>
-				<Header/>
+				<Header options={[
+					{name: 'Porsches', href: '/dash/porsche'}, 
+					{name: 'Craigslist', href: '/dash/craigslist'}, 
+					{name: 'FB Marketplace', href: '/dash/fbmarketplace'}, 
+				]}/>
 				<div className='sidebar'>
 					<div className='dropdown'>
 						<DropdownForm
