@@ -1,0 +1,36 @@
+.container {
+	display: grid;
+	grid-template-rows: 40px 55% 40%;
+	grid-template-columns: 15% auto;
+	width: 100vw;
+	height: 100vh;
+	padding: 10;
+	grid-template-areas: 
+    'header header'
+    'sidebar main'
+    'sidebar table';
+}
+
+.main {
+	display: grid;
+	grid-area: main;
+	grid-template-areas: 'chart legend';
+	grid-template-columns: 85% 10%;
+}
+
+
+.chart {
+	grid-area: chart;
+	width: 100%;
+	height: 100%;
+}
+
+
+.legend {
+	margin: 10;
+	grid-area: legend;
+
+	overflow-y: scroll;
+}
+
+

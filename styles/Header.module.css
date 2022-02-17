@@ -1,0 +1,9 @@
+.header {
+	grid-area: header;
+
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 100px);
+  justify-items: center;
+  align-items: center;
+  background-color: black;
+}
