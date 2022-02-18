@@ -31,7 +31,7 @@ export default function Sidebar(props) {
 					return (
 						<div>
 							{opt}
-							<select id='x-axis' onChange={props.onDropdownChange} style={props.style}>
+							<select id={opt} onChange={props.onDropdownChange} style={props.style}>
 								{['all'].concat(unique).map(d => <option key={d} value={ d }>{ d }</option>)}
 							</select>
 						</div>
