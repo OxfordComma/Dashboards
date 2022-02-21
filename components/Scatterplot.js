@@ -111,10 +111,10 @@ class Scatterplot extends React.Component {
 				isNaN(this.yScale(this.props.yValue.accessor(d))) ? 0 : this.yScale(this.props.yValue.accessor(d)) )
 			// .attr('pointer-events', d => d.selected == true ? 'visiblePainted' : 'none')
 			// .attr('_id', d => d._id)
-			.style('fill-opacity', 1)
+			.style('fill-opacity', d => d.selected ? 1 : 0.1)
 			.style('stroke', 'black')
 			.style('stroke-width', 0.5)
-			.style('stroke-opacity', d => d.selected == true ? 1 : 0)
+			.style('stroke-opacity', d => d.selected ? 1 : 0)
 
 
 		// Use the .exit() and .remove() methods to remove elements that are no longer in the data

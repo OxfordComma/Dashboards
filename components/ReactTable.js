@@ -6,6 +6,7 @@ import styles from '../styles/Table.module.css'
 function ReactTable(props) {
 	// console.log(props)
 		var columns = Object.keys(props.options).map(c => {
+			console.log(c)
 			return {
 				Header: c,
 				className: styles.theader,
@@ -20,12 +21,13 @@ function ReactTable(props) {
 			columns={React.useMemo(() => columns, [])} 
 			data={React.useMemo(() => props.data)}
 			sortBy={props.sortBy}
+			rowStyle={props.rowStyle}
 		/>
 	)
 	// }
 }
 
-function Table({ columns, data, sortBy }) {
+function Table({ columns, data, sortBy, rowStyle }) {
 	var manualRowSelectedKey = 'selected'
 	// Use the state and functions returned from useTable to build your UI
 	const {
@@ -40,13 +42,13 @@ function Table({ columns, data, sortBy }) {
 		data,
 		manualRowSelectedKey,
 		initialState: {
-				sortBy: [{id: sortBy, desc: false}]
+				sortBy: [sortBy]
 		}
 	},
 	useFilters,
 	useSortBy,
 	useRowSelect,
-	useFlexLayout,
+	// useFlexLayout,
 )
 
 
@@ -54,12 +56,18 @@ function Table({ columns, data, sortBy }) {
 	// Render the UI for your table
 	return (
 		<div className={styles.table}>
+			<style jsx>{`
+				 #tablerow {
+					grid-template-columns: ${rowStyle};
+				}
+			`}
+			</style>
 			<table className={styles.table} {...getTableProps()}>
 				<thead className={styles.tablehead}>
 					{headerGroups.map(headerGroup => {
 						{/*console.log('headerGroup:', headerGroup)*/}
 						return (
-						<tr className={styles.row} key={headerGroup.headers.reduce((acc, curr) => acc = acc+curr)} {...headerGroup.getHeaderGroupProps()}>
+						<tr className={styles.row} id='tablerow' key={headerGroup.headers.reduce((acc, curr) => acc = acc+curr)} {...headerGroup.getHeaderGroupProps()}>
 							{headerGroup.headers.map(column => {
 								{/*console.log('column:', column)*/}
 								return(
@@ -78,7 +86,7 @@ function Table({ columns, data, sortBy }) {
 							prepareRow(row);
 							{/*console.log('row:', row);*/}
 							return (
-								<tr className={styles.row} key={row.id} {...row.getRowProps()}>
+								<tr className={styles.row} id='tablerow' key={row.id} {...row.getRowProps()}>
 									{row.cells.map(cell => {
 										{/*console.log('cell:', cell)*/}
 										return <td className={styles.cell} key={cell.value} {...cell.getCellProps()}>{cell.render('Cell')}</td>

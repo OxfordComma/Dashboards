@@ -66,27 +66,27 @@ export default function FacebookMarketplace(props) {
 			'post_date': { 
 				accessor: d => d['post_date'],
 				sortType: (a, b) => new Date(a.values['post_date']) - new Date(b.values['post_date']) > 0 ? 1 : -1,
-				width: 150,
 				Cell: d => d3.utcFormat("%Y-%m-%d")(
 						new Date(d.row.original['post_date']),
-				 ),
+				),
+				width: '2fr',
 			},
-			'year': { accessor: d => d._year, width: 150 },
-			'make': { accessor: d => d._make, width: 150 },
-			'model': { accessor: d => d._model, width: 300 },
+			'year': { accessor: d => d._year  },
+			'make': { accessor: d => d._make },
+			'model': { accessor: d => d._model },
 			'title': { 
 				accessor: d => d.title.replace(d._year, '').replace(d._make, '').replace(d._model, ''),
 				Cell: d => <a href={d.row.original.url} target='_blank' rel='noreferrer'>{d.value}</a>,
-				width: 500
+				width: '3fr',
+				
 			 },
 			'price': { 
 				id: 'price',
 				accessor: d => d._price, 
-				width: 75,
 				Cell: d => <div style={{'textAlign': 'right'}} >{d3.format("$,.2r")(d.value)}</div>,
 			},
 		}}
-		sortTableBy={'post_date'}
+		sortTableBy={{id: 'post_date', desc: true}}
 		/>
 	)
 }

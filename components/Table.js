@@ -29,7 +29,7 @@ function Body(props) {
 						{ props.columns.map(key => 
 							<td 
 								key={key} 
-								style={{opacity: d.selected ? 1 : 0.1}} 
+								// style={{opacity: d.selected ? 1 : 0.1}} 
 								onClick={props.onClickCell}>{ d[key] }</td>) }
 					</tr>
 				)

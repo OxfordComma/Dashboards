@@ -1,34 +1,40 @@
 .container {
 	display: grid;
-	grid-template-rows: 40px 55% 40%;
+	grid-template-rows: 100%;
 	grid-template-columns: 15% auto;
-	width: 100vw;
-	height: 100vh;
-	padding: 10;
+	width: 100%;
+	height: 100%;
+
 	grid-template-areas: 
-    'header header'
-    'sidebar main'
-    'sidebar table';
+    'sidebar main';
 }
 
 .main {
 	display: grid;
 	grid-area: main;
-	grid-template-areas: 'chart legend';
-	grid-template-columns: 85% 10%;
-}
 
+	grid-template-areas: 
+		'chart legend'
+		'table table';
 
-.chart {
-	grid-area: chart;
+	grid-template-rows: 60% 40%;
+	grid-template-columns: 85% 15%;
+
 	width: 100%;
 	height: 100%;
 }
 
+.chart {
+	display: grid;
+	grid-area: chart;
+  overflow: scroll;
+	
+}
+
 
 .legend {
-	margin: 10;
 	grid-area: legend;
+	cursor: pointer;
 
 	overflow-y: scroll;
 }

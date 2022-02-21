@@ -62,6 +62,7 @@ class Legend extends React.Component {
 		  // .cells(this.props.legendValue.cells ?? 10)
 		  .orient(this.props.orientation)
 		  .scale(this.props.legendValue.scale)
+			.on('cellclick', d => this.props.onClickLegend(d))
 		  
 
 		// console.log(this.props.legendBy.scale.domain())
@@ -71,9 +72,10 @@ class Legend extends React.Component {
 		var l = selection.selectAll(".legendLinear")
 			.data([this.props.legendValue.label])
 			.enter().append("g")
-		  .attr("class", "legendLinear")
-		  // .attr("transform", "translate(20,20)")
-		  .call(legendLinear)
+			  .attr("class", "legendLinear")
+			  // .attr("transform", "translate(20,20)")
+
+			  .call(legendLinear)
 		// l.exit().remove()
 
 		// var lEnter = l

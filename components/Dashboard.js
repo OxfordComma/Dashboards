@@ -97,6 +97,7 @@ class Dashboard extends React.Component {
 	onClickLegend(item) {
 		console.log('legend click')
 		var currentData = this.state.data
+		console.log(item)
 		
 		var newData = currentData.map(c => {
 			c.selected = c[this.state.legendBy] == item
@@ -235,7 +236,6 @@ class Dashboard extends React.Component {
 
 		return (
 			<div className={styles.container}>
-				<Header />
 				<Sidebar
 					sidebar={this.state.sidebar}
 					rawData={this.state.rawData}
@@ -253,7 +253,7 @@ class Dashboard extends React.Component {
 							xValue={this.xOptions[this.state.xValue]}
 							yValue={this.yOptions[this.state.yValue]}
 							yMin={0}
-							xTicks={this.xOptions[this.state.xValue].ticks ? this.xOptions[this.state.xValue].ticks : undefined}
+							// xTicks={this.xOptions[this.state.xValue].ticks ? this.xOptions[this.state.xValue].ticks : undefined}
 							data={this.state.data.filter(d => {
 								if (d[this.state.xValue] == 'unknown' || d[this.state.xValue] == undefined)
 									return false
@@ -269,22 +269,25 @@ class Dashboard extends React.Component {
 						/>
 					</div>
 					<div className={styles.legend}>
-						<select id='x-axis' onChange={this.onLegendDropdownChange} style={{width: 100+'px'}}>
+						<select id='x-axis' onChange={this.onLegendDropdownChange} value={this.state.legendBy} style={{width: 100+'px'}}>
 							{Object.keys(this.legendOptions).map(d => <option key={d} value={ d }>{ d }</option>)}
 						</select>
 						<Legend
 							orientation={'vertical'}
 							legendValue={this.legendOptions[this.state.legendBy]}
+							onClickLegend={this.onClickLegend}
 						/>
 					</div>
+					<ReactTable 
+						data={this.state.data.filter(d => d.selected)}
+						options={this.tableOptions}
+						onClickRow={this.onClickRow}
+						keyBy={'_id'}
+						sortBy={this.props.sortTableBy}
+						rowStyle={Object.keys(this.tableOptions).map(t => (this.tableOptions[t].width ? this.tableOptions[t].width : '1fr')).join(' ') + ' !important'}//1fr 1fr 1fr 1fr 3fr 1fr !important;'}
+					/>
 				</div>
-				<ReactTable 
-					data={this.state.data.filter(d => d.selected)}
-					options={this.tableOptions}
-					onClickRow={this.onClickRow}
-					keyBy={'_id'}
-					sortBy={this.props.sortTableBy}
-				/>
+				
 			</div>
 		)
 	}
