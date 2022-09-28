@@ -1,19 +1,17 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import Header from './Header.js'
-import Scatterplot from './Scatterplot.js'
-import Legend from './Legend.js'
-import ReactTable from './ReactTable.js'
 import Sidebar from './Sidebar.js'
-// import DropdownForm from './DropdownForm.js'
+// import { ScatterplotLegend, Table } from 'quantifyjs'
+import { ScatterplotLegend, Table } from '/Users/nick/Projects/quantify/dist/index.js'
 import * as d3 from "d3";
 import styles from '../styles/Dashboard.module.css'
+import tableStyles from '../styles/Table.module.css'
 
 
 class Dashboard extends React.Component {
 	constructor(props) {
 		super(props)
-		
 		
 		this.state = {
 			data: [],
@@ -42,8 +40,8 @@ class Dashboard extends React.Component {
 		console.log('componentDidMount')
 		var dataUrl = this.props.dataUrl
 
+		// Load data from local URL
 		var data = await fetch(dataUrl).then(r => r.json())
-		console.log(data)
 
 		data = data.map(d => {
 			d.selected = true;
@@ -80,17 +78,7 @@ class Dashboard extends React.Component {
 		this.yOptions = this.props.yOptions
 
 		this.legendOptions = this.props.legendOptions
-			// .map(l => {
-				// let keys = Object.keys(l)
-				// l.scale.domain(new Set(data.map(d.accessor)).sort())
-			// })
-		if (data != undefined) {
-			Object.keys(this.legendOptions).map(k => {
-				let d = this.legendOptions[k]
-	  		d.scale.domain([...new Set(data.map(d.accessor))].sort())
-			})
-		}
-
+		
 		this.tableOptions = this.props.tableOptions
 	}
 
@@ -156,10 +144,6 @@ class Dashboard extends React.Component {
 		console.log('legend dropdown change')
 		var legendItem = event.target.value
 		var legendBy = legendItem
-
-		// var legendOption = this.legendOptions[legendBy]
-	 //  legendOption.scale
-	 //  	.domain(this.getUniqueItems(this.state.data, d=>legendOption.accessor(d)).sort())
 
 		event.preventDefault();
 
@@ -242,49 +226,44 @@ class Dashboard extends React.Component {
 					data={this.state.data}
 					onDropdownChange={this.onSidebarDropdownChange}
 					xOptions={Object.keys(this.xOptions)}
+					xSelected={this.state.xValue}
 					yOptions={Object.keys(this.yOptions)}
+					ySelected={this.state.yValue}
+					legendOptions={Object.keys(this.legendOptions)}
+					legendSelected={this.state.legendValue}
 					onXAxisDropdownChange={this.onXAxisDropdownChange}
 					onYAxisDropdownChange={this.onYAxisDropdownChange}
-					style={{width: 90+'px'}}
+					onLegendDropdownChange={this.onLegendDropdownChange}
 				/>
 				<div className={styles.main}>
 					<div className={styles.chart}>
-						<Scatterplot
-							xValue={this.xOptions[this.state.xValue]}
-							yValue={this.yOptions[this.state.yValue]}
-							yMin={0}
-							// xTicks={this.xOptions[this.state.xValue].ticks ? this.xOptions[this.state.xValue].ticks : undefined}
-							data={this.state.data.filter(d => {
-								if (d[this.state.xValue] == 'unknown' || d[this.state.xValue] == undefined)
-									return false
-								else
-									return true
-							})}
-							legendBy={this.state.legendBy}
-							legendValue={this.legendOptions[this.state.legendBy]}
-							onClickChartItem={this.onClickChartItem}
-							onClickBackground={this.onClickBackground}
+						<ScatterplotLegend
+							x={this.xOptions[this.state.xValue]}
+							y={this.yOptions[this.state.yValue]}
+							data={this.state.data.filter(d => !(
+								d[this.state.xValue] == 'unknown' || d[this.state.yValue] == 'unknown' || d[this.state.legendBy] == 'unknown' || 
+								d[this.state.xValue] == undefined || d[this.state.yValue] == undefined || d[this.state.legendBy] == undefined 
+							)).filter(d => (
+								this.state.sidebar['_model'] == 'all' || this.state.sidebar['_model'] == d['_model']
+							))} 
+							hue={this.legendOptions[this.state.legendBy]}
+							size={this.legendOptions[this.state.legendBy]}// size={this.legendOptions[this.state.legendBy]}
+							// onClickChartItem={this.onClickChartItem}
+							// onClickBackground={this.onClickBackground}
+							// colorScale={d3.interpolateRdBu}
 							keyBy={d => d['_id']}
-							tooltip={d => d.['title']}
+							setTooltip={d => d['title']}
+							marginLeft={60}
 						/>
 					</div>
-					<div className={styles.legend}>
-						<select id='x-axis' onChange={this.onLegendDropdownChange} value={this.state.legendBy} style={{width: 100+'px'}}>
-							{Object.keys(this.legendOptions).map(d => <option key={d} value={ d }>{ d }</option>)}
-						</select>
-						<Legend
-							orientation={'vertical'}
-							legendValue={this.legendOptions[this.state.legendBy]}
-							onClickLegend={this.onClickLegend}
-						/>
-					</div>
-					<ReactTable 
+					<Table 
 						data={this.state.data.filter(d => d.selected)}
 						options={this.tableOptions}
 						onClickRow={this.onClickRow}
 						keyBy={'_id'}
 						sortBy={this.props.sortTableBy}
-						rowStyle={Object.keys(this.tableOptions).map(t => (this.tableOptions[t].width ? this.tableOptions[t].width : '1fr')).join(' ') + ' !important'}//1fr 1fr 1fr 1fr 3fr 1fr !important;'}
+						styles={tableStyles}
+						rowStyle={Object.keys(this.tableOptions).map(t => (this.tableOptions[t].width ? this.tableOptions[t].width : '1fr')).join(' ') + ' !important'}
 					/>
 				</div>
 				

@@ -1,15 +1,14 @@
 import React from 'react'
 import { useTable, useSortBy, useFilters, useRowSelect, useFlexLayout } from 'react-table'
-import styles from '../styles/Table.module.css'
+// import styles from '../styles/Table.module.css'
 
 
 function ReactTable(props) {
 	// console.log(props)
 		var columns = Object.keys(props.options).map(c => {
-			console.log(c)
 			return {
 				Header: c,
-				className: styles.theader,
+				className: props.styles.tablehead,
 				sortType: 'basic',
 				backgroundColor: 'rgba(52, 52, 52, 0.8)',
 				...props.options[c]
@@ -21,13 +20,15 @@ function ReactTable(props) {
 			columns={React.useMemo(() => columns, [])} 
 			data={React.useMemo(() => props.data)}
 			sortBy={props.sortBy}
+			styles={props.styles}
 			rowStyle={props.rowStyle}
 		/>
 	)
 	// }
 }
 
-function Table({ columns, data, sortBy, rowStyle }) {
+function Table({ columns, data, sortBy, styles, rowStyle }) {
+	// let styles = stylesheet
 	var manualRowSelectedKey = 'selected'
 	// Use the state and functions returned from useTable to build your UI
 	const {
@@ -71,7 +72,7 @@ function Table({ columns, data, sortBy, rowStyle }) {
 							{headerGroup.headers.map(column => {
 								{/*console.log('column:', column)*/}
 								return(
-								<th key={column.Header} className={styles.cell} {...column.getHeaderProps({ className: column.className, ...column.getSortByToggleProps() })}>
+								<th key={column.Header} className={`${styles.headercell} ${styles.cell}`} {...column.getHeaderProps({ className: column.className, ...column.getSortByToggleProps() })}>
 									{column.render('Header') + (column.isSorted ? (column.isSortedDesc ? '↑' : '↓') : '⠀')}
 									{/*column.canFilter ? column.render('Filter') : null*/}
 			
@@ -89,7 +90,7 @@ function Table({ columns, data, sortBy, rowStyle }) {
 								<tr className={styles.row} id='tablerow' key={row.id} {...row.getRowProps()}>
 									{row.cells.map(cell => {
 										{/*console.log('cell:', cell)*/}
-										return <td className={styles.cell} key={cell.value} {...cell.getCellProps()}>{cell.render('Cell')}</td>
+										return <td className={`${styles.bodycell} ${styles.cell}`} key={cell.value} {...cell.getCellProps()}>{cell.render('Cell')}</td>
 									})}
 								</tr>
 							)}

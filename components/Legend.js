@@ -7,15 +7,10 @@ class Legend extends React.Component {
 		super(props);
 		this.legendRef = React.createRef()
 
-		// this.state = {
-			// name: props.legendBy.name,
-			// accessor: props.legendBy.accessor,
-			// scale: props.legendBy.scale
-		// }
+		this.state = {
+			by: undefined
+		}
 
-		// Graph width and height - accounting for margins
-		// this.drawWidth = this.props.width - this.props.margin.left - this.props.margin.right;
-		// this.drawHeight = this.props.height - this.props.margin.top - this.props.margin.bottom;
 	}
 	componentDidMount() {
 		this.update();
@@ -25,138 +20,147 @@ class Legend extends React.Component {
 		this.update();
 	}
 
+	
 	updateLegend() {
-		let selection = d3.select(this.legendRef.current)
-		// console.log(this.props)
-		// console.log(this.props.legendBy)
+		// let scale = this.by.scale
+		let by
 
-		// var linear = d3.scaleLinear()
-		//   .domain([ 0, 150000 ])
-		//   .range(["rgb(10, 10, 10)", "rgb(46, 73, 123)"]);
+		if (typeof(this.props.by) == 'string') {
+			by = {
+				name: this.props.by,
+				accessor: d => d[this.props.by],
+			}
+		}
+		else {
+			by = {
+				...this.props.by,
+			}
+			if (!by.accessor) {
+				by.accessor = d=> d[by.name]
+			}
+		}
 
-		// selection;
-		// var labelFunc = function({ 
-		// 	i,
-		//   genLength,
-		//   generatedLabels,
-		//   labelDelimiter
-		// 	}) {
-		//   	return d3.timeParse("%s")(parseInt(generatedLabels[i]))
-		//   }
+		
 
-		var legendLinear = legendColor()
-			// .labelFormat(this.props.legendBy.format ?? d3.format(","))
-		  .labels(({ 
-				i,
-			  genLength,
-			  generatedLabels,
-			  labelDelimiter
-			}) => { 
-				console.log(this.props.legendValue.format ? 
-		  		this.props.legendValue.format(generatedLabels[i]) :
-		  		generatedLabels[i])
-		  	return (this.props.legendValue.format ? 
-		  		this.props.legendValue.format(generatedLabels[i]) :
-		  		generatedLabels[i] )})
-		  .shapeWidth(30)
-		  // .cells(this.props.legendValue.cells ?? 10)
-		  .orient(this.props.orientation)
-		  .scale(this.props.legendValue.scale)
-			.on('cellclick', d => this.props.onClickLegend(d))
-		  
+		// console.log('legend color scale:', this.props.by.scale.domain())
+		// console.log('legend color scale:', this.props.by.scale.range())
 
-		// console.log(this.props.legendBy.scale.domain())
-  	// console.log(this.props.legendBy.scale.range())
-		selection.selectAll(".legendLinear").remove()
 
-		var l = selection.selectAll(".legendLinear")
-			.data([this.props.legendValue.label])
-			.enter().append("g")
-			  .attr("class", "legendLinear")
-			  // .attr("transform", "translate(20,20)")
 
-			  .call(legendLinear)
-		// l.exit().remove()
+		let scaleType
+		if (by.scale) {
+			console.log('domain length:', by.scale.domain().length)
+			scaleType = by.scale.domain().length == 2 ? 'number' : 'string'
 
-		// var lEnter = l
-		  
-		  // .attr('id', this.props.legendBy.name)
-		  
-		// lEnter.call(legendLinear)
 			
 
-		// let background = selection.selectAll('rect').data([null])
-		// background.enter().append('rect')
-		// 	.attr('x', -this.props.radius * 2)   
-		// 	.attr('y', -this.props.radius * 2)   
-		// 	.attr('width', this.drawWidth)
-		// 	.attr('height', this.props.radius * 4)
-		// 	.attr('opacity', 0);
+		}
+		else {
+			scaleType = typeof(by.accessor(this.props.data[0]) )
+			// if (scaleType == 'number') 
+			// 	by.scale = d3.scaleLinear(this.props.by.colorScale ?? this.props.continuousColorScale)
 
-		// console.log(this.props)
-		// const legendItems = selection.selectAll('.legend-item').data(this.props.legendItems);
-		// const legendItemsEnter = legendItems
-		// 	.enter().append('g')
-		// 		.attr('class', 'legend-item')
-		// 		.attr('opacity', 0)
-		// 		.on('click', d => this.props.onClickLegend(d))
+			// else
+			// 	by.scale = d3.scaleOrdinal(this.props.by.colorScale ?? this.props.discreteColorScale)
+		}
+		if (scaleType == 'number') 
+			by.scale = d3.scaleLinear(this.props.by.colorScale ?? this.props.continuousColorScale)
 
-		// legendItems.exit().remove()
+		else
+			by.scale = d3.scaleOrdinal(this.props.by.colorScale ?? this.props.discreteColorScale)
+
 		
+		// let byType = typeof(by.accessor(this.props.data[0]))
 
-		// legendItemsEnter.append('circle')
-		// 	.merge(legendItems.select('circle'))
-		// 		.attr('r', this.props.radius)
-		// 		.attr('fill', d => 
-		// 			this.props.legendBy == 'color' ? 
-		// 			d : 
-		// 			this.props.scale(d))
-		// 		.attr('fill-opacity', 1)
+		// console.log(by.scale(by.accessor(this.props.data[0])))
+		let isDateLegend = by.accessor(this.props.data[0]) instanceof Date
+		console.log('date legend?', isDateLegend)
+		if (by.name != this.state.by?.name) {
+			if (scaleType == 'number') {
+				console.log('numeric legend')
+			
+				let min = this.props.by.min ?? d3.min(this.props.data, d => by.accessor(d))
+				let max = this.props.by.max ?? d3.max(this.props.data, d => by.accessor(d))
+				console.log({
+					'legend min': min,
+					'legend max': max,
+				})
+
+				by.scale.domain([min, max])
+				by.scale.range(this.props.by.colorScale ?? this.props.continuousColorScale)
+			}
+			else {
+				console.log('categorical legend:', typeof(by.accessor(this.props.data[0])))
+				let discreteValues = [...new Set(this.props.data.map(d => by.accessor(d)))].sort()
+				console.log(discreteValues)
+				by.scale.domain(discreteValues)
+				by.scale.range(this.props.by.colorScale ?? this.props.discreteColorScale)
+
+				console.log({
+					byDomain: by.scale.domain(),
+					byRange: by.scale.range(),
+				})
+			}
+
+
+
+			// if(this.props.nice == 'nice')
+			// 	by.scale.nice()
+
+			this.setState({by: by})
+		}
+
+		let dateLegendFormat = this.state.by?.format ?? this.props.dateFormat
+		let dateLegendFunc = ({ i, genLength, generatedLabels }) => dateLegendFormat(generatedLabels[i])
 		
-		// legendItemsEnter.append('text')
-		// 	.merge(legendItems.select('text'))   
-		// 		.text(d => d)
-		// 		.attr('dy', '0.32em')
-		// 		.attr('x', this.props.radius * 2)
-		// 		.attr('text-anchor', 'start')
+		// console.log(by.scale.domain())
+		if (this.state.by !== undefined) {
+			let selection = d3.select(this.legendRef.current)
+			var legendLinear = legendColor()
+				.labelFormat(isDateLegend ? d3.format('.0f') : by.format ?? this.props.format)
+				.labels(isDateLegend ? dateLegendFunc :
+					this.state.by.cell ?? undefined
+				)
+			 //  .labels(({ 
+				// 	i,
+				//   genLength,
+				//   generatedLabels,
+				//   labelDelimiter
+				// }) => { 
+					// return generatedLabels.sort()[i] })
+				// 	console.log(this.props.format ? 
+			 //  		this.props.format(generatedLabels[i]) :
+			 //  		generatedLabels[i])
+			 //  	return (this.props.format ? 
+			 //  		this.props.format(generatedLabels[i]) :
+			 //  		generatedLabels[i] )})
+			  .shapeWidth(30)
+			  .cells(scaleType == 'number' ? 10 : [...new Set(this.props.data.map(d => by.accessor(d)))].length)
+			  .orient(this.props.orientation)
+			  .scale(this.state.by.scale)
+				.on('cellclick', d => this.props.onClickLegend(d))
+			  
+			selection.selectAll(".legendLinear").remove()
 
+			var l = selection.selectAll(".legendLinear")
+				.data([this.state.by.name])
+				.enter().append("g")
+				  .attr("class", "legendLinear")
+				  // .attr("transform", "translate(20,20)")
 
-		// legendItemsEnter.merge(legendItems)
-		// 	.transition().duration(350)
-		// 	.attr('transform', (d, i) => {
-		// 		var textLengths = d3.selectAll('.legend-item').selectAll('text').nodes().map(n => n.getComputedTextLength())
-		// 		//                  Each circle + some padding
-		// 		var totalWidth = this.props.direction == 'horizontal' ? 
-		// 			this.props.radius * 4 * textLengths.length + d3.sum(textLengths) + 20 : 
-		// 			this.props.radius * 4 + d3.max(textLengths) + 20
+				  .call(legendLinear)
+		}
 
-		// 		var align
-		// 		if (this.props.align == 'left')
-		// 			align = 0
-		// 		if (this.props.align == 'center')
-		// 			// align = (this.props.chartWidth - totalWidth)/2
-		// 			align = 0
-		// 		if (this.props.align == 'right')
-		// 			// align = this.props.chartWidth - totalWidth
-		// 			align = 0
-
-
-		// 		if (this.props.direction == 'horizontal') {
-		// 			return `translate(${ this.props.offset + align + (this.props.radius * 4 * i) + d3.sum(textLengths.slice(0, i)) }, 0)`
-		// 		}
-
-		// 		if (this.props.direction == 'vertical') {
-		// 			return `translate(${ this.props.offset + align }, ${ this.props.radius * i * 4 })`
-		// 		}
-
-		// 	})
-		// 	.attr('opacity', d => this.props.selectedLegendItems.includes(d) ? 1 : 0.1)
+		
 	}
-	update() {
+	async update() {
 		this.updateLegend();
 	}
 
 	render() {
+		if (this.props.data.length == 0)
+			return null
+
 		return (
 			<svg width="100%vw" height="100%vh">
 				<g ref={this.legendRef} className='legend'
@@ -177,7 +181,15 @@ Legend.defaultProps = {
 		right: 10,
 		top: 10,
 		bottom: 10
-	}
+	},
+	discreteColorScale: d3.schemeCategory10,
+	continuousColorScale: ['yellow', 'red'],
+	orientation: 'vertical',
+	onClickLegend: d => null,
+	format: d3.format('.0f'),
+	dateFormat: d3.utcFormat("%Y-%m-%d"),
+
+
 };
 
 export default Legend

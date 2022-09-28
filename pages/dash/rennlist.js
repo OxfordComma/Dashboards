@@ -2,6 +2,33 @@ import React from 'react'
 import Dashboard from '../../components/Dashboard.js'
 import * as d3 from 'd3'
 
+let post_time = {
+	name: 'post_time',
+	accessor: d => new Date(d['post_time']),
+	format: d3.utcFormat("%Y-%m-%d"),
+	scale: d3.scaleLinear(),
+}
+
+let year = {
+	name: 'year',
+	accessor: d => d['year'],
+	scale: d3.scaleOrdinal(),
+}
+
+let _price = { 
+	name: '_price',
+	accessor: d => d['_price'], 
+	scale: d3.scaleLinear(),
+	format: d3.format('$,.0f'),
+}
+
+let _mileage = { 
+	name: 'mileage',
+	accessor: d => d['_mileage'], 
+	scale: d3.scaleLinear(),
+	format: d3.format(',.0f'),
+}
+
 export default function Rennlist(props) {
 	return (
 		<Dashboard
@@ -19,64 +46,45 @@ export default function Rennlist(props) {
 				year: 'all',
 			}}
 			xOptions={{
-				'post_time': {
-					name: 'post_time',
-					accessor: d => new Date( d['post_time']), 
-					format: d => d3.timeFormat("%Y %b")(d),
-					scale: d3.scaleLinear(),
-						// .domain([
-						// 	d3.min(data, (d) => new Date(d['post_time'])),
-						// 	d3.max(data, (d) => new Date(d['post_time']))
-						// ]),
-				},
-				'year': {
-					name: 'year',
-					accessor: d => d['year'],
-					scale: d3.scaleLinear(),
-						// .domain([
-						// 	d3.min(data, (d) => d['year']),
-						// 	d3.max(data, (d) => d['year'])
-						// ]),
-					// ticks: this.getUniqueItems(data, d=>d['year']).length
-				},
-				_price: { 
-					label: 'price',
-					accessor: d => d['_price'], 
-					scale: d3.scaleLinear(),
-						// .domain([
-						// 	d3.min(data, (d) => d['_price']),
-						// 	d3.max(data, (d) => d['_price'])
-						// ]),
-				},
-				_mileage: {
-					label: 'mileage',
-					accessor: d => d['_mileage'],
-					scale: d3.scaleLinear(),
-						// .domain([
-						// 	d3.min(data, (d) => d['_mileage']),
-						// 	d3.max(data, (d) => d['_mileage'])
-						// ]),
-				}
+				'post_time': post_time,
+				// {
+				// 	name: 'post_time',
+				// 	accessor: d => new Date( d['post_time']), 
+				// 	format: d => d3.timeFormat("%Y %b")(d),
+				// 	scale: d3.scaleLinear(),
+				// },
+				'year': year,
+				// {
+				// 	name: 'year',
+				// 	accessor: d => d['year'],
+				// 	scale: d3.scaleLinear(),
+				// },
+				_price: _price,
+				// { 
+				// 	name: 'price',
+				// 	accessor: d => d['_price'], 
+				// 	scale: d3.scaleLinear(),
+				// },
+				_mileage: _mileage,
+				// {
+				// 	name: 'mileage',
+				// 	accessor: d => d['_mileage'],
+				// 	scale: d3.scaleLinear(),
+				// }
 			}}
 			yOptions={{
-				_price: { 
-					label: 'price',
-					accessor: d => d['_price'], 
-					scale: d3.scaleLinear(),
-						// .domain([
-						// 	d3.min(data, (d) => d['_price']),
-						// 	d3.max(data, (d) => d['_price'])
-						// ]),
-				},
-				_mileage: {
-					label: 'mileage',
-					accessor: d => d._mileage,
-					scale: d3.scaleLinear(),
-				  // 	.domain([
-						// 	d3.min(data, (d) => d['_mileage']),
-						// 	d3.max(data, (d) => d['_mileage'])
-						// ]),
-				}
+				_price: _price,
+				// { 
+				// 	name: 'price',
+				// 	accessor: d => d['_price'], 
+				// 	scale: d3.scaleLinear(),
+				// },
+				_mileage: _mileage,
+				// {
+				// 	name: 'mileage',
+				// 	accessor: d => d._mileage,
+				// 	scale: d3.scaleLinear(),
+				// }
 			}}
 			legendOptions={{
 				'_generation': {
@@ -89,28 +97,34 @@ export default function Rennlist(props) {
 					accessor: d => d['_color'], 
 					scale: d3.scaleOrdinal(d3.schemeCategory10),
 			  },
-				'post_time': {
-					name: 'post_time',
-					accessor: d => new Date( d['post_time']), 
-					format: d => d3.timeFormat("%Y %b")(d),
-					scale: d3.scaleLinear(['white', 'navy'])
+				'post_time': post_time,
+				// {
+				// 	name: 'post_time',
+				// 	accessor: d => new Date( d['post_time']), 
+				// 	format: d3.timeFormat("%Y %b"),
+				// 	scale: d3.scaleLinear(['white', 'navy'])
 					// 	.domain([
 					// 		d3.min(data, d => new Date(d['post_time'])),
 					// 		d3.max(data, d => new Date(d['post_time']))
 					// 	]),
-				},
-				'year': {
-					name: 'year',
-					accessor: d => d['year'],
-					scale: d3.scaleOrdinal(d3.schemeCategory10)
-						// .domain(this.getUniqueItems(data, d=>d['year']).sort())
-				},
+				// },
+				'year': year,
+				// {
+				// 	name: 'year',
+				// 	accessor: d => d['year'],
+				// 	scale: d3.scaleOrdinal(),
+				// 	// colorScale: ['white', 'navy'],
+				// 	colorScale: d3.schemeTableau10,
+				// 	format: d3.format('.0f')
+				// 		// .domain(this.getUniqueItems(data, d=>d['year']).sort())
+				// },
 				'_submodel': {
 					name: 'submodel',
 					accessor: d => d['_submodel'],
 					scale: d3.scaleOrdinal(d3.schemeCategory10)
 						// .domain(this.getUniqueItems(data, d=>d['_submodel']).sort())
-				}
+				},
+				_price: _price,
 			}}
 			tableOptions={{
 				// '_id': { accessor: d => d._id },
@@ -124,7 +138,7 @@ export default function Rennlist(props) {
 				'model': { accessor: d => d.model,  },
 				'info': { 
 					accessor: d => d._info,
-					Cell: d => <a href={d.row.original.url} target='_blank' rel='noreferrer'>{d.value.replace(/\(\)\|/, '')}</a>,
+					Cell: d => <a href={d.row.original.url} target='_blank' rel='noreferrer'>{d.value.replace(/()\|/,)}</a>,
 					width: '4fr'
 				 },
 				

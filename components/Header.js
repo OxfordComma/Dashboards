@@ -11,7 +11,7 @@ export default function Header(props) {
 	return (
 		<div className={styles.header}>
 			{options.map(opt => {
-				return <a href={opt.href}>{opt.name}</a>
+				return <a className={styles.headeritem} href={opt.href}>{opt.name}</a>
 			})}
 		</div>
 	)

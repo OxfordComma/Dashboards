@@ -2,21 +2,31 @@ import React from "react";
 // import DropdownForm from './DropdownForm'
 import styles from '../styles/Sidebar.module.css'
 
+function SidebarItem({
+	opt,
+	onChange,
+	sidebar,
+	items,
+	selected,
+}) {
+	return <div className={styles.sidebaritem}>
+		<div className={styles.sidebarcell}>
+			{opt}
+		</div>
+		<select id={opt} onChange={onChange} value={sidebar[opt]} className={styles.sidebarcell}>
+			{items.map(d => <option key={d} value={ d } selected={d == selected}>{ d }</option>)}
+		</select>
+	</div>
+}
+
+
+
 export default function Sidebar(props) {
 	return (
 		<div className={styles.sidebar}>
-			<div className={styles.sidebaroption}>
-			x-axis
-			<select id='x-axis' onChange={props.onXAxisDropdownChange} style={{width: 90+'px'}}>
-				{props.xOptions.map(d => <option key={d} value={ d }>{ d }</option>)}
-			</select>
-			</div>
-			<div className={styles.sidebaroption}>
-			y-axis
-			<select id='y-axis' onChange={props.onYAxisDropdownChange} style={{width: 90+'px'}}>
-				{props.yOptions.map(d => <option key={d} value={ d }>{ d }</option>)}
-			</select>
-			</div>
+			<SidebarItem opt={'x-axis'} onChange={props.onXAxisDropdownChange} sidebar={props.sidebar} items={props.xOptions} selected={props.xSelected}/>
+			<SidebarItem opt={'y-axis'} onChange={props.onYAxisDropdownChange} sidebar={props.sidebar} items={props.yOptions} selected={props.ySelected}/>
+			<SidebarItem opt={'legend'} onChange={props.onLegendDropdownChange} sidebar={props.sidebar} items={props.legendOptions} selected={props.legendSelected}/>
 			
 			{
 				Object.keys(props.sidebar).map(opt => {
@@ -28,14 +38,7 @@ export default function Sidebar(props) {
 						unique = [...new Set(props.rawData.map(item => item[opt]?.toString()).filter(d => d))].sort()
 					}
 					
-					return (
-						<div className={styles.sidebaroption}>
-							{opt}
-							<select id={opt} onChange={props.onDropdownChange} style={props.style} value={props.sidebar[opt]}>
-								{['all'].concat(unique).map(d => <option key={d} value={ d }>{ d }</option>)}
-							</select>
-						</div>
-					)
+					return <SidebarItem opt={opt} onChange={props.onDropdownChange} sidebar={props.sidebar} items={['all'].concat(unique)}/>
 				})
 			}
 		</div>
