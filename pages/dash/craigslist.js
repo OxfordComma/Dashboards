@@ -12,7 +12,7 @@ let _price = {
 	name: '_price',
 	accessor: d => d['_price'], 
 	scale: d3.scaleLinear(),
-	format: d3.format('$.0f')
+	format: d3.format('$,.0f')
 }
 
 let post_date = {

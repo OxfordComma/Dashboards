@@ -41,4 +41,8 @@
 	overflow-y: scroll;
 }
 
+.d3-tip {
+	backdrop-filter: blur(10px);
+}
+
 
