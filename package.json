@@ -23,7 +23,7 @@
     "morgan": "~1.9.1",
     "next": "^12.1.0",
     "pug": "^2.0.4",
-    "quantifyjs": "^0.1.8",
+    "quantifyjs": "^0.1.9",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-table": "^7.2.0"
